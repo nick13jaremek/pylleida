@@ -3,7 +3,7 @@
 
 """The setup script."""
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open('README.rst') as readme_file:
     readme = readme_file.read()
@@ -17,7 +17,7 @@ requirements = [
     'requests==2.18.4'
 
 ]
-
+print find_packages("pylleida")
 setup_requirements = []
 
 test_requirements = []
@@ -30,9 +30,12 @@ setup(
     author="Nick M. Jaremek",
     author_email='nick13jaremek@gmail.com',
     url='https://github.com/reclamador/pylleida',
-    packages=[
-        'pylleida'
-    ],
+    packages=['pylleida'],
+    package_data={
+        'pylleida': [
+            'templates/*.xml',
+            'api/*.py'
+        ]},
     include_package_data=True,
     install_requires=requirements,
     license="MIT license",
