@@ -11,6 +11,10 @@ class MailCertApi(BaseApi):
         self.endpoint = 'https://tsa.lleida.net/cgi-bin/mailcertapi.cgi'
         super(MailCertApi, self).__init__(**config)
 
+    def post(self, endpoint, template_name, in_params):
+        response = super(MailCertApi, self).post(endpoint, template_name, in_params)
+        return response['result']
+
     def get_default_settings(self):
         template_name = 'get_default_settings.xml'
         params = {}
