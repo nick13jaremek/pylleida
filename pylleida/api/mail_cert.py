@@ -31,7 +31,7 @@ class MailCertApi(BaseApi):
         Returns a list of items, each item referencing a Lleida.net email certificante.
         The input parameters act as search criteria to narrow the returned results.
 
-        :param mail_from: results by a given sender's email address.
+        :param mail_from: filter results by a given sender's email address.
         :param mail_to: filter results by a given recipient's email address.
         :param date_min: filter results starting from an initial date.
         :param date_max: filter results starting from a final date.
@@ -82,7 +82,7 @@ class MailCertApi(BaseApi):
         params = {'file_id': file_id}
 
         response = self.post(endpoint=self.endpoint, template_name=template_name, in_params=params)
-        if getattr(response, 'result', None):
+        if response.get('result', None):
             ret_data = response['result']
             ret_data['has_file'] = False
         else:
