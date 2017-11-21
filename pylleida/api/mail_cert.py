@@ -13,7 +13,7 @@ class MailCertApi(BaseApi):
 
     def post(self, endpoint, template_name, in_params):
         response = super(MailCertApi, self).post(endpoint, template_name, in_params)
-        return response['result']
+        return response
 
     def get_default_settings(self):
         template_name = 'get_default_settings.xml'
@@ -57,7 +57,18 @@ class MailCertApi(BaseApi):
             'only_last_file_id': only_last_file_id
         }
         response = self.post(endpoint=self.endpoint, template_name=template_name, in_params=params)
-        return MailCertApiResponse(response)
+
+        ret_data = response['result']
+
+        # Returned results should always be in a list, event if there is a single result or no results at all
+        num_results = ret_data['pdf_list'].get('@rows_found', u'0')  # @ prefix due to XML attribute conversion
+        num_results = int(num_results)
+        if num_results == 1:
+            ret_data['pdf_list']['pdf_row'] = [ret_data['pdf_list']['pdf_row']]
+        if num_results == 0:
+            ret_data['pdf_list']['pdf_row'] = []
+
+        return MailCertApiResponse(ret_data)
 
     def download_pdf(self, file_id):
         """
@@ -71,4 +82,9 @@ class MailCertApi(BaseApi):
         params = {'file_id': file_id}
 
         response = self.post(endpoint=self.endpoint, template_name=template_name, in_params=params)
-        return MailCertApiResponse(response)
+        if getattr(response, 'result', None):
+            ret_data = response['result']
+            ret_data['has_file'] = False
+        else:
+            ret_data = {'content': response, 'has_file': True}
+        return MailCertApiResponse(ret_data)
