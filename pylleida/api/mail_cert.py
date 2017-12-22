@@ -86,5 +86,5 @@ class MailCertApi(BaseApi):
             ret_data = response['result']
             ret_data['has_file'] = False
         else:
-            ret_data = {'content': response, 'has_file': True}
+            ret_data = {'content': response['content'], 'has_file': True}
         return MailCertApiResponse(ret_data)
